@@ -5,40 +5,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
+    port: 3000,
+    host: true, // Нужно для работы в Docker
     proxy: {
       '/api': {
-        target: 'https://igroom.ru',
+        target: process.env.VITE_API_URL || 'http://localhost:3001',
         changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            proxyReq.removeHeader('origin');
-            proxyReq.removeHeader('referer');
-            
-            console.log('Sending Request:', {
-              method: req.method,
-              url: req.url,
-              target: proxyReq.path,
-              headers: proxyReq.getHeaders()
-            });
-          });
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            proxyRes.headers['access-control-allow-origin'] = '*';
-            proxyRes.headers['access-control-allow-methods'] = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-            proxyRes.headers['access-control-allow-headers'] = '*';
-            proxyRes.headers['access-control-allow-credentials'] = 'true';
-            
-            console.log('Received Response:', {
-              statusCode: proxyRes.statusCode,
-              url: req.url,
-              headers: proxyRes.headers
-            });
-          });
-        }
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

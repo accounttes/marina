@@ -57,13 +57,35 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  // Извлекаем все необходимые данные из ответа
+  const {
+    image,
+    title,
+    subtitle,
+    left,
+    middle,
+    right
+  } = profileData;
+
+  // Извлекаем данные из middle массива
+  const nickname = middle?.[0]?.group?.[0]?.label?.text || '';
+  const date = middle?.[0]?.group?.[1]?.label?.text || '';
+  const daysInIgrum = middle?.[1]?.group?.[0]?.label?.text || '';
+  const meetings = middle?.[1]?.group?.[1]?.label?.text || '';
+  const rumers = middle?.[1]?.group?.[2]?.label?.text || '';
+  const city = middle?.[2]?.group?.[0]?.label?.text || '';
+  const rumit = middle?.[2]?.group?.[1]?.label?.text || '';
+
+  const backButton = left?.[0]?.button;
+  const shareButton = right?.[0]?.button;
+
   return (
     <section className="wrapper">
       <div className='profile'> 
-        <button>
+        <button onClick={() => backButton?.cmd && console.log('Back button clicked')}>
           <img src={backArrow} alt="Back" className="back-arrow" />
         </button>
-        <img src={profileData.image} alt="Profile" className="avatar" />
+        <img src={image} alt="Profile" className="avatar" />
         <div className="icons-container">
           <button>
             <img className="icons-download" src={download} alt="Download" />
@@ -79,34 +101,35 @@ function App() {
 
       <div className='info'>
         <h1 className='title'>румер:</h1>
-        <div className='name'>{profileData.title}</div>
+        <div className='name'>{title}</div>
+        {subtitle && <div className='subtitle'>{subtitle}</div>}
       </div>
 
       <div className='nickname-container'>
-        <h2 className='nickname'>@{profileData.middle[0].group[0].label.text}</h2>
-        <p className='date'>{profileData.middle[1].group[0].label.text}</p>
+        <h2 className='nickname'>@{nickname}</h2>
+        <p className='date'>{date}</p>
       </div>
 
       <div className="metrics-container">
         <div className="metric-item">
-          <span className="metric-value">{profileData.middle[1].group[1].label.text}</span>
+          <span className="metric-value">{daysInIgrum}</span>
           <span className="metric-label">в игруме</span>
         </div>
         <div className="metric-item">
-          <span className="metric-value">{profileData.middle[1].group[2].label.text}</span>
+          <span className="metric-value">{meetings}</span>
           <span className="metric-label">встреч</span>
         </div>
         <div className="metric-item">
-          <span className="metric-value">{profileData.middle[1].group[3].label.text}</span>
+          <span className="metric-value">{rumers}</span>
           <span className="metric-label">румеров</span>
         </div>
       </div>
 
       <div className='city-container'>
-        <div className='city'>{profileData.middle[2].group[0].label.text}</div>
-        <button className='edit-button'>
+        <div className='city'>{city}</div>
+        <button className='edit-button' onClick={() => console.log('Edit button clicked')}>
           <img className='edit-icon' src={edit} alt="Edit" /> 
-          <p>{profileData.middle[2].group[1].label.text}</p>
+          <p>{rumit}</p>
         </button>
       </div>
 
@@ -118,7 +141,7 @@ function App() {
               <span className="accordion-title">ЗОВЫ</span>
             </div>
             <div> 
-              <span className="accordion-count">4</span>
+              <span className="accordion-count">{meetings}</span>
               <img src={arrow} alt="Arrow" className="accordion-arrow" />
             </div>
           </div>
